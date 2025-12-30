@@ -8,18 +8,13 @@ import {
   ChevronLeft,
   ChevronRight,
   Heart,
-  Minus,
-  Plus,
   Truck,
   Shield,
-  RefreshCw,
   Star,
   Clock,
   Check,
   Ruler,
-  Package,
   Sparkles,
-  Loader2,
   ZoomIn,
   Share2,
   Info,
@@ -57,7 +52,6 @@ export function ProductDetail({ product, relatedProducts }: ProductDetailProps) 
   const [allProducts, setAllProducts] = useState<FirebaseProduct[]>([])
   const [loadingSections, setLoadingSections] = useState(true)
 
-  // Touch swipe for mobile gallery
   const touchStartX = useRef<number>(0)
   const touchEndX = useRef<number>(0)
   const sizeSelectionRef = useRef<HTMLDivElement>(null)
@@ -81,7 +75,6 @@ export function ProductDetail({ product, relatedProducts }: ProductDetailProps) 
     }
   }
 
-  // Carrega seções de recomendação e produtos do Firebase
   useEffect(() => {
     const unsubSections = subscribeToRecommendationSections((sections) => {
       const filteredSections = sections.filter((s) => s.enabled && s.showOnCategories.includes(product.category))
@@ -105,7 +98,6 @@ export function ProductDetail({ product, relatedProducts }: ProductDetailProps) 
     }
   }, [selectedSize])
 
-  // Função para obter produtos de uma seção
   const getSectionProducts = (section: RecommendationSection): Product[] => {
     if (section.productIds && section.productIds.length > 0) {
       return section.productIds
@@ -134,21 +126,14 @@ export function ProductDetail({ product, relatedProducts }: ProductDetailProps) 
 
   const images = product.images || [product.image]
 
-  // Stock count based on product ID for consistency
-  const stockCount = (product.id.charCodeAt(0) % 5) + 3
-
   const handleBuyNow = () => {
     if (!selectedSize) {
       setSizeError(true)
-      // Scroll to size selection on mobile
       sizeSelectionRef.current?.scrollIntoView({ behavior: "smooth", block: "center" })
       return
     }
 
-    // Add to cart first
     addItem(product, quantity, selectedSize, selectedColor)
-
-    // Redirect to SyncPayments checkout
     window.location.href = "https://app.syncpayments.com.br/payment-link/a0b6a316-0b7d-4f45-bebf-1053e21f43dd"
   }
 
@@ -192,12 +177,12 @@ export function ProductDetail({ product, relatedProducts }: ProductDetailProps) 
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Main Content */}
-      <div className="container mx-auto px-0 md:px-4 pb-36 md:pb-16">
-        <div className="grid lg:grid-cols-2 gap-0 lg:gap-12">
-          {/* Image Gallery - Full width on mobile */}
+      {/* Main Content - Better mobile layout */}
+      <div className="w-full max-w-7xl mx-auto px-0 md:px-4 lg:px-6 pb-32 md:pb-16">
+        <div className="grid lg:grid-cols-2 gap-0 lg:gap-8 xl:gap-12">
+          {/* Image Gallery */}
           <div className="relative">
-            {/* Main Image with touch swipe */}
+            {/* Main Image */}
             <div
               className="relative aspect-[3/4] md:aspect-[4/5] md:rounded-2xl overflow-hidden bg-secondary cursor-zoom-in group"
               onClick={() => setShowZoomModal(true)}
@@ -217,7 +202,7 @@ export function ProductDetail({ product, relatedProducts }: ProductDetailProps) 
                 <span>Clique para ampliar</span>
               </div>
 
-              {/* Navigation Arrows */}
+              {/* Navigation Arrows - Smaller on mobile */}
               {images.length > 1 && (
                 <>
                   <button
@@ -225,44 +210,44 @@ export function ProductDetail({ product, relatedProducts }: ProductDetailProps) 
                       e.stopPropagation()
                       prevImage()
                     }}
-                    className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-background/90 backdrop-blur-sm flex items-center justify-center hover:bg-background transition-colors shadow-lg active:scale-95"
+                    className="absolute left-2 md:left-3 top-1/2 -translate-y-1/2 w-9 h-9 md:w-10 md:h-10 rounded-full bg-background/90 backdrop-blur-sm flex items-center justify-center hover:bg-background transition-colors shadow-lg active:scale-95"
                   >
-                    <ChevronLeft className="w-5 h-5" />
+                    <ChevronLeft className="w-4 h-4 md:w-5 md:h-5" />
                   </button>
                   <button
                     onClick={(e) => {
                       e.stopPropagation()
                       nextImage()
                     }}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-background/90 backdrop-blur-sm flex items-center justify-center hover:bg-background transition-colors shadow-lg active:scale-95"
+                    className="absolute right-2 md:right-3 top-1/2 -translate-y-1/2 w-9 h-9 md:w-10 md:h-10 rounded-full bg-background/90 backdrop-blur-sm flex items-center justify-center hover:bg-background transition-colors shadow-lg active:scale-95"
                   >
-                    <ChevronRight className="w-5 h-5" />
+                    <ChevronRight className="w-4 h-4 md:w-5 md:h-5" />
                   </button>
                 </>
               )}
 
-              {/* Badges */}
-              <div className="absolute top-4 left-4 flex flex-col gap-2">
+              {/* Badges - Smaller on mobile */}
+              <div className="absolute top-3 md:top-4 left-3 md:left-4 flex flex-col gap-1.5 md:gap-2">
                 {product.isNew && (
-                  <span className="bg-primary text-primary-foreground text-xs px-3 py-1.5 rounded-full font-medium">
+                  <span className="bg-primary text-primary-foreground text-[10px] md:text-xs px-2.5 md:px-3 py-1 md:py-1.5 rounded-full font-medium">
                     Novo
                   </span>
                 )}
                 {product.isSale && discountPercent > 0 && (
-                  <span className="bg-red-500 text-white text-xs px-3 py-1.5 rounded-full font-medium">
+                  <span className="bg-red-500 text-white text-[10px] md:text-xs px-2.5 md:px-3 py-1 md:py-1.5 rounded-full font-medium">
                     -{discountPercent}%
                   </span>
                 )}
               </div>
 
-              {/* Top Right Actions */}
-              <div className="absolute top-4 right-4 flex flex-col gap-2">
+              {/* Top Right Actions - Larger touch targets */}
+              <div className="absolute top-3 md:top-4 right-3 md:right-4 flex flex-col gap-2">
                 <button
                   onClick={(e) => {
                     e.stopPropagation()
                     toggleFavorite(product.id)
                   }}
-                  className={`w-11 h-11 rounded-full flex items-center justify-center transition-all shadow-lg active:scale-95 ${
+                  className={`w-10 h-10 md:w-11 md:h-11 rounded-full flex items-center justify-center transition-all shadow-lg active:scale-95 ${
                     favorited
                       ? "bg-red-500 text-white"
                       : "bg-background/90 backdrop-blur-sm text-foreground hover:bg-background"
@@ -275,7 +260,7 @@ export function ProductDetail({ product, relatedProducts }: ProductDetailProps) 
                     e.stopPropagation()
                     handleShare()
                   }}
-                  className="w-11 h-11 rounded-full bg-background/90 backdrop-blur-sm flex items-center justify-center hover:bg-background transition-colors shadow-lg active:scale-95"
+                  className="w-10 h-10 md:w-11 md:h-11 rounded-full bg-background/90 backdrop-blur-sm flex items-center justify-center hover:bg-background transition-colors shadow-lg active:scale-95"
                 >
                   <Share2 className="w-5 h-5" />
                 </button>
@@ -283,7 +268,7 @@ export function ProductDetail({ product, relatedProducts }: ProductDetailProps) 
 
               {/* Image dots indicator */}
               {images.length > 1 && (
-                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5 bg-background/60 backdrop-blur-sm rounded-full px-3 py-2">
+                <div className="absolute bottom-3 md:bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5 bg-background/60 backdrop-blur-sm rounded-full px-2.5 md:px-3 py-1.5 md:py-2">
                   {images.map((_, idx) => (
                     <button
                       key={idx}
@@ -291,8 +276,8 @@ export function ProductDetail({ product, relatedProducts }: ProductDetailProps) 
                         e.stopPropagation()
                         setSelectedImage(idx)
                       }}
-                      className={`w-2 h-2 rounded-full transition-all ${
-                        selectedImage === idx ? "bg-foreground w-6" : "bg-foreground/40"
+                      className={`w-1.5 h-1.5 md:w-2 md:h-2 rounded-full transition-all ${
+                        selectedImage === idx ? "bg-foreground w-4 md:w-6" : "bg-foreground/40"
                       }`}
                     />
                   ))}
@@ -302,12 +287,12 @@ export function ProductDetail({ product, relatedProducts }: ProductDetailProps) 
 
             {/* Thumbnails - Desktop only */}
             {images.length > 1 && (
-              <div className="hidden md:flex gap-3 mt-4 overflow-x-auto pb-2 px-4 lg:px-0">
+              <div className="hidden md:flex gap-2 lg:gap-3 mt-3 lg:mt-4 overflow-x-auto pb-2 px-4 lg:px-0 hide-scrollbar">
                 {images.map((img, idx) => (
                   <button
                     key={idx}
                     onClick={() => setSelectedImage(idx)}
-                    className={`relative flex-shrink-0 w-20 h-24 rounded-lg overflow-hidden transition-all ${
+                    className={`relative flex-shrink-0 w-16 h-20 lg:w-20 lg:h-24 rounded-lg overflow-hidden transition-all ${
                       selectedImage === idx ? "ring-2 ring-primary ring-offset-2" : "opacity-60 hover:opacity-100"
                     }`}
                   >
@@ -318,10 +303,10 @@ export function ProductDetail({ product, relatedProducts }: ProductDetailProps) 
             )}
           </div>
 
-          {/* Product Info */}
-          <div className="px-4 lg:px-0 pt-6 space-y-5">
-            {/* Breadcrumb - Mobile mini version */}
-            <nav className="flex items-center gap-2 text-xs text-muted-foreground md:hidden">
+          {/* Product Info - Better mobile padding */}
+          <div className="px-4 lg:px-0 pt-5 md:pt-6 space-y-4 md:space-y-5">
+            {/* Breadcrumb */}
+            <nav className="flex items-center gap-1.5 md:gap-2 text-[10px] md:text-xs text-muted-foreground">
               <Link href="/" className="hover:text-primary transition-colors">
                 Início
               </Link>
@@ -331,36 +316,35 @@ export function ProductDetail({ product, relatedProducts }: ProductDetailProps) 
               </Link>
             </nav>
 
-            {/* Title & Rating */}
+            {/* Title & Rating - Better mobile sizing */}
             <div>
-              <h1 className="text-xl md:text-2xl lg:text-3xl font-bold text-foreground text-balance leading-tight">
+              <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-foreground text-balance leading-tight">
                 {product.name}
               </h1>
 
-              {/* Stars */}
               <div className="flex items-center gap-2 mt-2">
                 <div className="flex">
                   {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="w-4 h-4 fill-primary text-primary" />
+                    <Star key={i} className="w-3.5 h-3.5 md:w-4 md:h-4 fill-primary text-primary" />
                   ))}
                 </div>
-                <span className="text-xs text-muted-foreground">(127 avaliações)</span>
+                <span className="text-[10px] md:text-xs text-muted-foreground">(127 avaliações)</span>
               </div>
             </div>
 
-            {/* Price */}
+            {/* Price - Responsive sizing */}
             <div className="space-y-1">
-              <div className="flex items-baseline gap-3 flex-wrap">
-                <span className="text-3xl md:text-4xl font-bold text-foreground">
+              <div className="flex items-baseline gap-2 md:gap-3 flex-wrap">
+                <span className="text-2xl md:text-3xl lg:text-4xl font-bold text-foreground">
                   R$ {product.price.toLocaleString("pt-BR")}
                 </span>
                 {product.originalPrice && (
-                  <span className="text-base text-muted-foreground line-through">
+                  <span className="text-sm md:text-base text-muted-foreground line-through">
                     R$ {product.originalPrice.toLocaleString("pt-BR")}
                   </span>
                 )}
               </div>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-xs md:text-sm text-muted-foreground">
                 ou{" "}
                 <span className="font-medium text-foreground">
                   10x de R$ {(product.price / 10).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
@@ -368,25 +352,25 @@ export function ProductDetail({ product, relatedProducts }: ProductDetailProps) 
                 sem juros
               </p>
               {product.originalPrice && product.originalPrice > product.price && (
-                <p className="text-sm text-green-600 dark:text-green-400 font-medium flex items-center gap-1">
-                  <Sparkles className="w-4 h-4" />
+                <p className="text-xs md:text-sm text-green-600 dark:text-green-400 font-medium flex items-center gap-1">
+                  <Sparkles className="w-3.5 h-3.5 md:w-4 md:h-4" />
                   Economia de R$ {(product.originalPrice - product.price).toLocaleString("pt-BR")}
                 </p>
               )}
             </div>
 
-            {/* Colors */}
+            {/* Colors - Larger touch targets */}
             {product.colors && product.colors.length > 0 && (
-              <div className="space-y-3">
-                <span className="text-sm font-medium text-foreground">
+              <div className="space-y-2 md:space-y-3">
+                <span className="text-xs md:text-sm font-medium text-foreground">
                   Cor: <span className="text-muted-foreground">{selectedColor}</span>
                 </span>
-                <div className="flex gap-3">
+                <div className="flex gap-2.5 md:gap-3">
                   {product.colors.map((color) => (
                     <button
                       key={color.name}
                       onClick={() => setSelectedColor(color.name)}
-                      className={`w-10 h-10 rounded-full border-2 transition-all active:scale-95 ${
+                      className={`w-9 h-9 md:w-10 md:h-10 rounded-full border-2 transition-all active:scale-95 ${
                         selectedColor === color.name
                           ? "border-primary scale-110 shadow-lg"
                           : "border-border hover:scale-105"
@@ -399,11 +383,11 @@ export function ProductDetail({ product, relatedProducts }: ProductDetailProps) 
               </div>
             )}
 
-            {/* Sizes - With error state */}
+            {/* Sizes - Larger buttons for mobile */}
             {product.sizes && (
-              <div className="space-y-3" ref={sizeSelectionRef}>
+              <div className="space-y-2 md:space-y-3" ref={sizeSelectionRef}>
                 <div className="flex items-center justify-between">
-                  <span className={`text-sm font-medium ${sizeError ? "text-red-500" : "text-foreground"}`}>
+                  <span className={`text-xs md:text-sm font-medium ${sizeError ? "text-red-500" : "text-foreground"}`}>
                     Tamanho:{" "}
                     <span className={sizeError ? "text-red-500" : "text-muted-foreground"}>
                       {selectedSize || "Selecione"}
@@ -411,17 +395,17 @@ export function ProductDetail({ product, relatedProducts }: ProductDetailProps) 
                   </span>
                   <button
                     onClick={() => setShowSizeGuide(!showSizeGuide)}
-                    className="text-xs text-primary hover:underline flex items-center gap-1"
+                    className="text-[10px] md:text-xs text-primary hover:underline flex items-center gap-1"
                   >
-                    <Ruler className="w-3.5 h-3.5" />
+                    <Ruler className="w-3 h-3 md:w-3.5 md:h-3.5" />
                     Guia de Medidas
                   </button>
                 </div>
 
                 {sizeError && (
-                  <div className="flex items-center gap-2 text-red-500 text-sm animate-pulse">
-                    <AlertCircle className="w-4 h-4" />
-                    <span>Por favor, selecione um tamanho para continuar</span>
+                  <div className="flex items-center gap-2 text-red-500 text-xs md:text-sm animate-pulse">
+                    <AlertCircle className="w-3.5 h-3.5 md:w-4 md:h-4" />
+                    <span>Por favor, selecione um tamanho</span>
                   </div>
                 )}
 
@@ -430,7 +414,7 @@ export function ProductDetail({ product, relatedProducts }: ProductDetailProps) 
                     <button
                       key={size}
                       onClick={() => setSelectedSize(size)}
-                      className={`min-w-[3.5rem] h-12 px-4 rounded-xl border-2 text-sm font-medium transition-all active:scale-95 ${
+                      className={`min-w-[3rem] md:min-w-[3.5rem] h-11 md:h-12 px-3 md:px-4 rounded-xl border-2 text-xs md:text-sm font-medium transition-all active:scale-95 ${
                         selectedSize === size
                           ? "border-primary bg-primary text-primary-foreground shadow-lg"
                           : sizeError
@@ -443,25 +427,25 @@ export function ProductDetail({ product, relatedProducts }: ProductDetailProps) 
                   ))}
                 </div>
 
+                {/* Size Guide - Better mobile table */}
                 {showSizeGuide && (
-                  <div className="p-4 bg-secondary rounded-xl mt-3 space-y-4">
-                    <h4 className="font-semibold flex items-center gap-2 text-sm">
-                      <Ruler className="w-4 h-4 text-primary" />
+                  <div className="p-3 md:p-4 bg-secondary rounded-xl mt-2 md:mt-3 space-y-3 md:space-y-4">
+                    <h4 className="font-semibold flex items-center gap-2 text-xs md:text-sm">
+                      <Ruler className="w-3.5 h-3.5 md:w-4 md:h-4 text-primary" />
                       Guia de Tamanhos
                     </h4>
 
-                    {/* Fit Warning */}
-                    <div className="p-3 bg-amber-50 dark:bg-amber-950/30 rounded-lg border border-amber-200 dark:border-amber-800">
-                      <p className="text-xs text-amber-800 dark:text-amber-200 flex items-start gap-2">
-                        <Info className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                    <div className="p-2.5 md:p-3 bg-amber-50 dark:bg-amber-950/30 rounded-lg border border-amber-200 dark:border-amber-800">
+                      <p className="text-[10px] md:text-xs text-amber-800 dark:text-amber-200 flex items-start gap-2">
+                        <Info className="w-3.5 h-3.5 md:w-4 md:h-4 mt-0.5 flex-shrink-0" />
                         <span>
                           <strong>Modelagem Asa Delta:</strong> Esta peça possui corte cavado para valorizar o corpo.
                         </span>
                       </p>
                     </div>
 
-                    <div className="overflow-x-auto -mx-4 px-4">
-                      <table className="w-full text-xs">
+                    <div className="overflow-x-auto -mx-3 md:-mx-4 px-3 md:px-4">
+                      <table className="w-full text-[10px] md:text-xs min-w-[280px]">
                         <thead>
                           <tr className="border-b border-border">
                             <th className="text-left py-2 font-semibold">Tam</th>
@@ -488,372 +472,189 @@ export function ProductDetail({ product, relatedProducts }: ProductDetailProps) 
                         </tbody>
                       </table>
                     </div>
-                    <p className="text-xs text-muted-foreground">
-                      Dica: Se estiver entre dois tamanhos, opte pelo maior para maior conforto.
-                    </p>
+                    <p className="text-[10px] md:text-xs text-muted-foreground">Medidas em centímetros</p>
                   </div>
                 )}
               </div>
             )}
 
-            {/* Quantity */}
-            <div className="flex items-center justify-between py-2">
-              <span className="text-sm font-medium text-foreground">Quantidade</span>
-              <div className="flex items-center gap-3">
-                <div className="flex items-center bg-secondary rounded-full">
-                  <button
-                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                    className="w-11 h-11 flex items-center justify-center hover:text-primary transition-colors active:scale-95"
-                  >
-                    <Minus className="w-4 h-4" />
-                  </button>
-                  <span className="w-8 text-center font-semibold">{quantity}</span>
-                  <button
-                    onClick={() => setQuantity(Math.min(stockCount, quantity + 1))}
-                    className="w-11 h-11 flex items-center justify-center hover:text-primary transition-colors active:scale-95"
-                  >
-                    <Plus className="w-4 h-4" />
-                  </button>
-                </div>
-                <span className="text-xs text-muted-foreground">{stockCount} disponíveis</span>
-              </div>
-            </div>
-
-            {/* Trust Badges - Compact horizontal scroll on mobile */}
-            <div className="flex items-center gap-4 py-4 border-y border-border overflow-x-auto scrollbar-hide">
-              <div className="flex items-center gap-2 flex-shrink-0">
-                <Truck className="w-4 h-4 text-primary" />
-                <span className="text-xs whitespace-nowrap">Frete Grátis +R$299</span>
-              </div>
-              <div className="w-px h-4 bg-border flex-shrink-0" />
-              <div className="flex items-center gap-2 flex-shrink-0">
-                <RefreshCw className="w-4 h-4 text-primary" />
-                <span className="text-xs whitespace-nowrap">Troca Grátis</span>
-              </div>
-              <div className="w-px h-4 bg-border flex-shrink-0" />
-              <div className="flex items-center gap-2 flex-shrink-0">
-                <Shield className="w-4 h-4 text-primary" />
-                <span className="text-xs whitespace-nowrap">Compra Segura</span>
-              </div>
-            </div>
-
-            {/* Accordion Sections - Desktop */}
-            <div className="hidden md:block space-y-0 border border-border rounded-xl overflow-hidden">
-              {/* Description */}
-              <div className="border-b border-border last:border-b-0">
-                <button
-                  onClick={() => toggleSection("description")}
-                  className="w-full flex items-center justify-between p-4 text-left hover:bg-secondary/50 transition-colors"
-                >
-                  <span className="font-medium text-sm">Descrição</span>
-                  <ChevronDown
-                    className={`w-4 h-4 text-muted-foreground transition-transform ${expandedSection === "description" ? "rotate-180" : ""}`}
-                  />
-                </button>
-                {expandedSection === "description" && (
-                  <div className="px-4 pb-4 space-y-3">
-                    <p className="text-sm text-muted-foreground leading-relaxed">{product.description}</p>
-                    {product.material && (
-                      <p className="text-sm">
-                        <span className="font-medium">Material:</span>{" "}
-                        <span className="text-muted-foreground">{product.material}</span>
-                      </p>
-                    )}
-                  </div>
-                )}
-              </div>
-
-              {/* Details */}
-              {product.details && product.details.length > 0 && (
-                <div className="border-b border-border last:border-b-0">
-                  <button
-                    onClick={() => toggleSection("details")}
-                    className="w-full flex items-center justify-between p-4 text-left hover:bg-secondary/50 transition-colors"
-                  >
-                    <span className="font-medium text-sm">Detalhes</span>
-                    <ChevronDown
-                      className={`w-4 h-4 text-muted-foreground transition-transform ${expandedSection === "details" ? "rotate-180" : ""}`}
-                    />
-                  </button>
-                  {expandedSection === "details" && (
-                    <div className="px-4 pb-4">
-                      <ul className="space-y-2">
-                        {product.details.map((detail, idx) => (
-                          <li key={idx} className="flex items-start gap-2 text-sm text-muted-foreground">
-                            <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-                            <span>{detail}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {/* Shipping */}
-              <div className="border-b border-border last:border-b-0">
-                <button
-                  onClick={() => toggleSection("shipping")}
-                  className="w-full flex items-center justify-between p-4 text-left hover:bg-secondary/50 transition-colors"
-                >
-                  <span className="font-medium text-sm">Entrega</span>
-                  <ChevronDown
-                    className={`w-4 h-4 text-muted-foreground transition-transform ${expandedSection === "shipping" ? "rotate-180" : ""}`}
-                  />
-                </button>
-                {expandedSection === "shipping" && (
-                  <div className="px-4 pb-4 space-y-3">
-                    <div className="flex items-start gap-3">
-                      <Clock className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
-                      <p className="text-sm text-muted-foreground">
-                        <strong className="text-foreground">3 a 5 dias úteis</strong> para postagem
-                      </p>
-                    </div>
-                    <div className="flex items-start gap-3">
-                      <Truck className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
-                      <p className="text-sm text-muted-foreground">+ Prazo dos Correios conforme sua região</p>
-                    </div>
-                    <div className="flex items-start gap-3">
-                      <Package className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
-                      <p className="text-sm text-muted-foreground">
-                        <strong className="text-foreground">Frete Grátis</strong> para compras acima de R$299
-                      </p>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {/* CTA Button - Desktop only */}
-            <div className="hidden md:block pt-4 space-y-4">
+            {/* Buy Button - Desktop only */}
+            <div className="hidden md:block space-y-3 pt-2">
               <Button
                 size="lg"
-                className={`w-full rounded-xl h-14 text-base font-bold gap-2 shadow-lg transition-all ${
+                className={`w-full h-14 text-base font-semibold rounded-xl transition-all ${
                   canPurchase
-                    ? "bg-primary hover:bg-primary/90 text-primary-foreground"
+                    ? "bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg hover:shadow-xl"
                     : "bg-muted text-muted-foreground cursor-not-allowed"
                 }`}
                 onClick={handleBuyNow}
+                disabled={!canPurchase}
               >
-                <Lock className="w-4 h-4" />
-                {canPurchase ? `Finalizar Compra - R$ ${totalPrice.toLocaleString("pt-BR")}` : "Selecione o tamanho"}
+                <Lock className="w-5 h-5 mr-2" />
+                {canPurchase ? `Finalizar Compra • R$ ${totalPrice.toLocaleString("pt-BR")}` : "Selecione o tamanho"}
               </Button>
 
-              {/* Payment trust indicators */}
-              <div className="flex items-center justify-center gap-4 text-muted-foreground">
-                <div className="flex items-center gap-1.5 text-xs">
-                  <Shield className="w-3.5 h-3.5 text-green-600" />
-                  <span>Pagamento 100% Seguro</span>
-                </div>
-                <div className="flex items-center gap-1.5 text-xs">
+              <div className="flex items-center justify-center gap-4 text-xs text-muted-foreground">
+                <span className="flex items-center gap-1">
+                  <Shield className="w-3.5 h-3.5 text-green-500" />
+                  Pagamento Seguro
+                </span>
+                <span className="flex items-center gap-1">
                   <CreditCard className="w-3.5 h-3.5" />
-                  <span>Cartão, Pix ou Boleto</span>
-                </div>
+                  Cartão, Pix ou Boleto
+                </span>
               </div>
             </div>
-          </div>
-        </div>
 
-        {/* Mobile Accordion Sections */}
-        <div className="md:hidden px-4 mt-6 space-y-0 border-y border-border">
-          {/* Description */}
-          <div className="border-b border-border last:border-b-0">
-            <button
-              onClick={() => toggleSection("description")}
-              className="w-full flex items-center justify-between py-4 text-left"
-            >
-              <span className="font-medium text-sm">Descrição</span>
-              <ChevronDown
-                className={`w-4 h-4 text-muted-foreground transition-transform ${expandedSection === "description" ? "rotate-180" : ""}`}
-              />
-            </button>
-            {expandedSection === "description" && (
-              <div className="pb-4 space-y-3">
-                <p className="text-sm text-muted-foreground leading-relaxed">{product.description}</p>
-                {product.material && (
-                  <p className="text-sm">
-                    <span className="font-medium">Material:</span>{" "}
-                    <span className="text-muted-foreground">{product.material}</span>
-                  </p>
+            {/* Info Accordions - Better mobile spacing */}
+            <div className="space-y-2 pt-2 md:pt-4">
+              {/* Description */}
+              <div className="border border-border rounded-xl overflow-hidden">
+                <button
+                  onClick={() => toggleSection("description")}
+                  className="w-full flex items-center justify-between p-3 md:p-4 text-left"
+                >
+                  <span className="font-medium text-sm md:text-base">Descrição</span>
+                  <ChevronDown
+                    className={`w-4 h-4 md:w-5 md:h-5 transition-transform ${expandedSection === "description" ? "rotate-180" : ""}`}
+                  />
+                </button>
+                {expandedSection === "description" && (
+                  <div className="px-3 md:px-4 pb-3 md:pb-4 text-xs md:text-sm text-muted-foreground leading-relaxed">
+                    {product.description || "Peça exclusiva da coleção de verão, confeccionada com tecidos premium."}
+                  </div>
                 )}
               </div>
-            )}
-          </div>
 
-          {/* Details */}
-          {product.details && product.details.length > 0 && (
-            <div className="border-b border-border last:border-b-0">
-              <button
-                onClick={() => toggleSection("details")}
-                className="w-full flex items-center justify-between py-4 text-left"
-              >
-                <span className="font-medium text-sm">Detalhes</span>
-                <ChevronDown
-                  className={`w-4 h-4 text-muted-foreground transition-transform ${expandedSection === "details" ? "rotate-180" : ""}`}
-                />
-              </button>
-              {expandedSection === "details" && (
-                <div className="pb-4">
-                  <ul className="space-y-2">
-                    {product.details.map((detail, idx) => (
-                      <li key={idx} className="flex items-start gap-2 text-sm text-muted-foreground">
-                        <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-                        <span>{detail}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* Shipping */}
-          <div>
-            <button
-              onClick={() => toggleSection("shipping")}
-              className="w-full flex items-center justify-between py-4 text-left"
-            >
-              <span className="font-medium text-sm">Entrega</span>
-              <ChevronDown
-                className={`w-4 h-4 text-muted-foreground transition-transform ${expandedSection === "shipping" ? "rotate-180" : ""}`}
-              />
-            </button>
-            {expandedSection === "shipping" && (
-              <div className="pb-4 space-y-3">
-                <div className="flex items-start gap-3">
-                  <Clock className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
-                  <p className="text-sm text-muted-foreground">
-                    <strong className="text-foreground">3 a 5 dias úteis</strong> para postagem
-                  </p>
-                </div>
-                <div className="flex items-start gap-3">
-                  <Truck className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
-                  <p className="text-sm text-muted-foreground">+ Prazo dos Correios conforme sua região</p>
-                </div>
-                <div className="flex items-start gap-3">
-                  <Package className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
-                  <p className="text-sm text-muted-foreground">
-                    <strong className="text-foreground">Frete Grátis</strong> acima de R$299
-                  </p>
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Recommendation Sections */}
-        <div className="px-4 lg:px-0">
-          {loadingSections ? (
-            <div className="mt-12 flex items-center justify-center">
-              <Loader2 className="w-6 h-6 animate-spin text-primary" />
-            </div>
-          ) : (
-            <>
-              {recommendationSections.map((section) => {
-                const sectionProducts = getSectionProducts(section)
-                if (sectionProducts.length === 0) return null
-
-                return (
-                  <div key={section.id} className="mt-12">
-                    <div className="mb-6">
-                      <h2 className="text-lg md:text-xl font-bold text-foreground">{section.title}</h2>
-                      {section.description && (
-                        <p className="text-sm text-muted-foreground mt-1">{section.description}</p>
-                      )}
-                    </div>
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6">
-                      {sectionProducts.map((sectionProduct) => (
-                        <Link key={sectionProduct.id} href={`/produto/${sectionProduct.id}`} className="group">
-                          <div className="relative aspect-[3/4] rounded-xl overflow-hidden bg-secondary mb-2">
-                            <img
-                              src={sectionProduct.image || "/placeholder.svg"}
-                              alt={sectionProduct.name}
-                              className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
-                            />
-                            {sectionProduct.isNew && (
-                              <span className="absolute top-2 left-2 bg-primary text-primary-foreground text-xs px-2 py-1 rounded-full">
-                                Novo
-                              </span>
-                            )}
-                          </div>
-                          <h4 className="font-medium text-sm text-foreground group-hover:text-primary transition-colors line-clamp-1">
-                            {sectionProduct.name}
-                          </h4>
-                          <p className="text-sm font-bold text-foreground">
-                            R$ {sectionProduct.price.toLocaleString("pt-BR")}
-                          </p>
-                        </Link>
-                      ))}
-                    </div>
-                  </div>
-                )
-              })}
-
-              {recommendationSections.length === 0 && relatedProducts.length > 0 && (
-                <div className="mt-12">
-                  <h2 className="text-lg md:text-xl font-bold text-foreground mb-6">Você também pode gostar</h2>
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6">
-                    {relatedProducts.map((relatedProduct) => (
-                      <Link key={relatedProduct.id} href={`/produto/${relatedProduct.id}`} className="group">
-                        <div className="relative aspect-[3/4] rounded-xl overflow-hidden bg-secondary mb-2">
-                          <img
-                            src={relatedProduct.image || "/placeholder.svg"}
-                            alt={relatedProduct.name}
-                            className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
-                          />
-                          {relatedProduct.isNew && (
-                            <span className="absolute top-2 left-2 bg-primary text-primary-foreground text-xs px-2 py-1 rounded-full">
-                              Novo
-                            </span>
-                          )}
-                        </div>
-                        <h4 className="font-medium text-sm text-foreground group-hover:text-primary transition-colors line-clamp-1">
-                          {relatedProduct.name}
-                        </h4>
-                        <p className="text-sm font-bold text-foreground">
-                          R$ {relatedProduct.price.toLocaleString("pt-BR")}
+              {/* Shipping */}
+              <div className="border border-border rounded-xl overflow-hidden">
+                <button
+                  onClick={() => toggleSection("shipping")}
+                  className="w-full flex items-center justify-between p-3 md:p-4 text-left"
+                >
+                  <span className="font-medium text-sm md:text-base flex items-center gap-2">
+                    <Truck className="w-4 h-4 text-primary" />
+                    Entrega
+                  </span>
+                  <ChevronDown
+                    className={`w-4 h-4 md:w-5 md:h-5 transition-transform ${expandedSection === "shipping" ? "rotate-180" : ""}`}
+                  />
+                </button>
+                {expandedSection === "shipping" && (
+                  <div className="px-3 md:px-4 pb-3 md:pb-4 space-y-2 md:space-y-3">
+                    <div className="flex items-start gap-2 md:gap-3">
+                      <Clock className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+                      <div>
+                        <p className="text-xs md:text-sm font-medium">Prazo de Envio</p>
+                        <p className="text-[10px] md:text-xs text-muted-foreground">
+                          3-5 dias úteis para separação + tempo dos Correios
                         </p>
-                      </Link>
-                    ))}
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-2 md:gap-3">
+                      <Sparkles className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                      <div>
+                        <p className="text-xs md:text-sm font-medium text-green-600">Frete Grátis</p>
+                        <p className="text-[10px] md:text-xs text-muted-foreground">Em compras acima de R$ 299</p>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              )}
-            </>
-          )}
+                )}
+              </div>
+
+              {/* Guarantees */}
+              <div className="border border-border rounded-xl overflow-hidden">
+                <button
+                  onClick={() => toggleSection("guarantees")}
+                  className="w-full flex items-center justify-between p-3 md:p-4 text-left"
+                >
+                  <span className="font-medium text-sm md:text-base flex items-center gap-2">
+                    <Shield className="w-4 h-4 text-primary" />
+                    Garantias
+                  </span>
+                  <ChevronDown
+                    className={`w-4 h-4 md:w-5 md:h-5 transition-transform ${expandedSection === "guarantees" ? "rotate-180" : ""}`}
+                  />
+                </button>
+                {expandedSection === "guarantees" && (
+                  <div className="px-3 md:px-4 pb-3 md:pb-4 space-y-2 md:space-y-3">
+                    <div className="flex items-center gap-2 md:gap-3">
+                      <Check className="w-4 h-4 text-green-500 flex-shrink-0" />
+                      <span className="text-xs md:text-sm">7 dias para troca ou devolução</span>
+                    </div>
+                    <div className="flex items-center gap-2 md:gap-3">
+                      <Check className="w-4 h-4 text-green-500 flex-shrink-0" />
+                      <span className="text-xs md:text-sm">Produto original com garantia</span>
+                    </div>
+                    <div className="flex items-center gap-2 md:gap-3">
+                      <Check className="w-4 h-4 text-green-500 flex-shrink-0" />
+                      <span className="text-xs md:text-sm">Pagamento 100% seguro</span>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
         </div>
+
+        {/* Related Products */}
+        {relatedProducts.length > 0 && (
+          <div className="mt-12 md:mt-16 px-4 lg:px-0">
+            <h3 className="text-lg md:text-xl lg:text-2xl font-bold mb-4 md:mb-6">Você também pode gostar</h3>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 lg:gap-6">
+              {relatedProducts.slice(0, 4).map((rp) => (
+                <Link key={rp.id} href={`/produto/${rp.id}`} className="group">
+                  <div className="aspect-[3/4] rounded-xl md:rounded-2xl overflow-hidden bg-secondary mb-2 md:mb-3">
+                    <img
+                      src={rp.image || "/placeholder.svg"}
+                      alt={rp.name}
+                      className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500"
+                    />
+                  </div>
+                  <h4 className="text-xs md:text-sm font-medium line-clamp-1 group-hover:text-primary transition-colors">
+                    {rp.name}
+                  </h4>
+                  <p className="text-xs md:text-sm font-bold">R$ {rp.price.toLocaleString("pt-BR")}</p>
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
 
-      {/* Sticky CTA Footer - Mobile only */}
-      <div className="fixed bottom-0 left-0 right-0 bg-background border-t border-border p-4 pb-6 md:hidden z-50">
+      {/* Mobile Sticky Footer - Better iOS safe area support */}
+      <div className="fixed bottom-0 left-0 right-0 md:hidden bg-background/95 backdrop-blur-lg border-t border-border p-3 safe-bottom z-50">
         <Button
-          size="lg"
-          className={`w-full rounded-xl h-14 font-bold gap-2 shadow-xl transition-all active:scale-[0.98] ${
-            canPurchase ? "bg-primary hover:bg-primary/90 text-primary-foreground" : "bg-muted text-muted-foreground"
+          className={`w-full h-12 text-sm font-semibold rounded-xl transition-all ${
+            canPurchase
+              ? "bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg"
+              : "bg-muted text-muted-foreground"
           }`}
           onClick={handleBuyNow}
+          disabled={!canPurchase}
         >
-          <Lock className="w-5 h-5" />
-          {canPurchase ? `Comprar - R$ ${totalPrice.toLocaleString("pt-BR")}` : "Selecione o tamanho"}
+          <Lock className="w-4 h-4 mr-2" />
+          {canPurchase ? `Finalizar Compra • R$ ${totalPrice.toLocaleString("pt-BR")}` : "Selecione o tamanho"}
         </Button>
-        <div className="flex items-center justify-center gap-4 mt-3 text-muted-foreground">
-          <div className="flex items-center gap-1.5 text-xs">
-            <Shield className="w-3.5 h-3.5 text-green-600" />
-            <span>Seguro</span>
-          </div>
-          <div className="flex items-center gap-1.5 text-xs">
-            <CreditCard className="w-3.5 h-3.5" />
-            <span>Cartão, Pix ou Boleto</span>
-          </div>
+        <div className="flex items-center justify-center gap-3 mt-2 text-[10px] text-muted-foreground">
+          <span className="flex items-center gap-1">
+            <Shield className="w-3 h-3 text-green-500" />
+            Seguro
+          </span>
+          <span className="flex items-center gap-1">
+            <CreditCard className="w-3 h-3" />
+            Cartão, Pix ou Boleto
+          </span>
         </div>
       </div>
 
-      {/* Image Zoom Modal */}
+      {/* Zoom Modal */}
       <ImageZoomModal
         images={images}
-        initialIndex={selectedImage}
+        currentIndex={selectedImage}
         isOpen={showZoomModal}
         onClose={() => setShowZoomModal(false)}
-        productName={product.name}
+        onNavigate={setSelectedImage}
       />
     </div>
   )

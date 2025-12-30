@@ -73,24 +73,26 @@ export function ProductsSection() {
   }
 
   return (
-    <section id="novidades" className="py-24">
-      <div className="container mx-auto px-4">
-        {/* Section Header */}
-        <div className="text-center mb-12 space-y-4">
-          <span className="text-primary text-sm uppercase tracking-[0.3em]">Coleção</span>
-          <h3 className="text-4xl md:text-5xl font-bold text-foreground">Nossos Produtos</h3>
-          <p className="text-muted-foreground max-w-md mx-auto">
+    <section id="novidades" className="py-12 md:py-24">
+      <div className="w-full px-4 md:px-6 max-w-7xl mx-auto">
+        {/* Section Header - Smaller on mobile */}
+        <div className="text-center mb-8 md:mb-12 space-y-3 md:space-y-4">
+          <span className="text-primary text-xs md:text-sm uppercase tracking-[0.2em] md:tracking-[0.3em]">
+            Coleção
+          </span>
+          <h3 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-foreground">Nossos Produtos</h3>
+          <p className="text-sm md:text-base text-muted-foreground max-w-md mx-auto">
             Peças cuidadosamente selecionadas para o seu verão perfeito
           </p>
         </div>
 
-        {/* Category Filters */}
-        <div className="flex flex-wrap justify-center gap-2 mb-12">
+        {/* Category Filters - Horizontal scroll on mobile */}
+        <div className="flex justify-start md:justify-center gap-2 mb-8 md:mb-12 overflow-x-auto hide-scrollbar pb-2 -mx-4 px-4 md:mx-0 md:px-0">
           {categories.map((category) => (
             <button
               key={category.id}
               onClick={() => setActiveCategory(category.id)}
-              className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${
+              className={`px-4 md:px-6 py-2 md:py-2.5 rounded-full text-xs md:text-sm font-medium transition-all whitespace-nowrap flex-shrink-0 active:scale-95 ${
                 activeCategory === category.id
                   ? "bg-primary text-primary-foreground"
                   : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
@@ -103,16 +105,16 @@ export function ProductsSection() {
 
         {/* Loading State */}
         {loading ? (
-          <div className="flex items-center justify-center py-20">
-            <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary" />
+          <div className="flex items-center justify-center py-16 md:py-20">
+            <div className="animate-spin rounded-full h-8 w-8 md:h-10 md:w-10 border-b-2 border-primary" />
           </div>
         ) : filteredProducts.length === 0 ? (
-          <div className="text-center py-20">
-            <p className="text-muted-foreground">Nenhum produto encontrado nesta categoria.</p>
+          <div className="text-center py-16 md:py-20">
+            <p className="text-sm md:text-base text-muted-foreground">Nenhum produto encontrado nesta categoria.</p>
           </div>
         ) : (
-          /* Products Grid */
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-8">
+          /* Products Grid - Better gap on mobile */
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6 lg:gap-8">
             {filteredProducts.map((product) => (
               <ProductCard
                 key={product.id}

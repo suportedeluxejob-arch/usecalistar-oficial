@@ -13,140 +13,161 @@ export function Header() {
   const { totalFavorites } = useFavorites()
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
-      {/* Announcement Bar */}
-      <div className="bg-primary text-primary-foreground text-center py-2 text-sm tracking-wider">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-md border-b border-border safe-top">
+      {/* Announcement Bar - Smaller text on mobile */}
+      <div className="bg-primary text-primary-foreground text-center py-1.5 md:py-2 text-xs md:text-sm tracking-wider px-4">
         <span className="font-light">FRETE GRÁTIS</span> em compras acima de R$299
       </div>
 
-      <nav className="container mx-auto px-4 py-4">
-        <div className="flex items-center justify-between">
-          {/* Mobile Menu Button */}
-          <button className="lg:hidden p-2" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+      <nav className="w-full px-3 md:px-4 py-3 md:py-4">
+        <div className="flex items-center justify-between gap-2 max-w-7xl mx-auto">
+          {/* Mobile Menu Button - Larger touch target */}
+          <button
+            className="lg:hidden p-2 -ml-2 min-w-[44px] min-h-[44px] flex items-center justify-center"
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            aria-label={isMenuOpen ? "Fechar menu" : "Abrir menu"}
+          >
             {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
 
-          {/* Logo */}
-          <Link href="/" className="flex-1 lg:flex-none text-center lg:text-left">
-            <h1 className="text-3xl font-bold tracking-tight text-foreground">usecalistar</h1>
-            <span className="text-xs tracking-[0.3em] text-muted-foreground uppercase">Bikini Collection</span>
+          {/* Logo - Responsive sizing */}
+          <Link href="/" className="flex-1 lg:flex-none text-center lg:text-left min-w-0">
+            <h1 className="text-xl md:text-2xl lg:text-3xl font-bold tracking-tight text-foreground truncate">
+              usecalistar
+            </h1>
+            <span className="text-[10px] md:text-xs tracking-[0.2em] md:tracking-[0.3em] text-muted-foreground uppercase hidden sm:block">
+              Bikini Collection
+            </span>
           </Link>
 
-          {/* Desktop Navigation - Updated links to category pages */}
-          <div className="hidden lg:flex items-center gap-8 flex-1 justify-center">
+          {/* Desktop Navigation */}
+          <div className="hidden lg:flex items-center gap-6 xl:gap-8 flex-1 justify-center">
             <Link
               href="/#novidades"
-              className="text-sm tracking-wide hover:text-primary transition-colors uppercase font-medium"
+              className="text-sm tracking-wide hover:text-primary transition-colors uppercase font-medium whitespace-nowrap"
             >
               Novidades
             </Link>
             <Link
               href="/categoria/conjuntos"
-              className="text-sm tracking-wide hover:text-primary transition-colors uppercase font-medium"
+              className="text-sm tracking-wide hover:text-primary transition-colors uppercase font-medium whitespace-nowrap"
             >
               Conjuntos
             </Link>
             <Link
               href="/categoria/tops"
-              className="text-sm tracking-wide hover:text-primary transition-colors uppercase font-medium"
+              className="text-sm tracking-wide hover:text-primary transition-colors uppercase font-medium whitespace-nowrap"
             >
               Tops
             </Link>
             <Link
               href="/categoria/calcinhas"
-              className="text-sm tracking-wide hover:text-primary transition-colors uppercase font-medium"
+              className="text-sm tracking-wide hover:text-primary transition-colors uppercase font-medium whitespace-nowrap"
             >
               Calcinhas
             </Link>
             <Link
               href="/nossa-historia"
-              className="text-sm tracking-wide hover:text-primary transition-colors uppercase font-medium"
+              className="text-sm tracking-wide hover:text-primary transition-colors uppercase font-medium whitespace-nowrap"
             >
               Nossa História
             </Link>
           </div>
 
-          {/* Actions */}
-          <div className="flex items-center gap-2">
-            <Button variant="ghost" size="icon" className="hidden md:flex">
+          {/* Actions - Larger touch targets */}
+          <div className="flex items-center gap-0.5 md:gap-1">
+            <Button variant="ghost" size="icon" className="hidden md:flex w-10 h-10 md:w-11 md:h-11">
               <Search className="w-5 h-5" />
             </Button>
             <Link href="/favoritos">
-              <Button variant="ghost" size="icon" className="relative">
+              <Button variant="ghost" size="icon" className="relative w-10 h-10 md:w-11 md:h-11">
                 <Heart className="w-5 h-5" />
                 {totalFavorites > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">
-                    {totalFavorites}
+                  <span className="absolute -top-0.5 -right-0.5 bg-red-500 text-white text-[10px] md:text-xs min-w-[18px] h-[18px] md:min-w-[20px] md:h-5 rounded-full flex items-center justify-center font-medium">
+                    {totalFavorites > 9 ? "9+" : totalFavorites}
                   </span>
                 )}
               </Button>
             </Link>
-            <Button variant="ghost" size="icon" className="relative" onClick={openCart}>
+            <Button variant="ghost" size="icon" className="relative w-10 h-10 md:w-11 md:h-11" onClick={openCart}>
               <ShoppingBag className="w-5 h-5" />
-              <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-xs w-5 h-5 rounded-full flex items-center justify-center">
-                {totalItems}
-              </span>
+              {totalItems > 0 && (
+                <span className="absolute -top-0.5 -right-0.5 bg-primary text-primary-foreground text-[10px] md:text-xs min-w-[18px] h-[18px] md:min-w-[20px] md:h-5 rounded-full flex items-center justify-center font-medium">
+                  {totalItems > 9 ? "9+" : totalItems}
+                </span>
+              )}
             </Button>
-            <Link href="/admin">
-              <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-primary">
+            <Link href="/admin" className="hidden md:block">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="text-muted-foreground hover:text-primary w-10 h-10 md:w-11 md:h-11"
+              >
                 <Settings className="w-5 h-5" />
               </Button>
             </Link>
           </div>
         </div>
 
-        {/* Mobile Menu - Updated links to category pages */}
+        {/* Mobile Menu - Full screen overlay with better UX */}
         {isMenuOpen && (
-          <div className="lg:hidden mt-4 pb-4 border-t border-border pt-4 space-y-4">
-            <Link
-              href="/#novidades"
-              className="block text-center py-2 text-sm tracking-wide hover:text-primary transition-colors uppercase"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Novidades
-            </Link>
-            <Link
-              href="/categoria/conjuntos"
-              className="block text-center py-2 text-sm tracking-wide hover:text-primary transition-colors uppercase"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Conjuntos
-            </Link>
-            <Link
-              href="/categoria/tops"
-              className="block text-center py-2 text-sm tracking-wide hover:text-primary transition-colors uppercase"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Tops
-            </Link>
-            <Link
-              href="/categoria/calcinhas"
-              className="block text-center py-2 text-sm tracking-wide hover:text-primary transition-colors uppercase"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Calcinhas
-            </Link>
-            <Link
-              href="/favoritos"
-              className="block text-center py-2 text-sm tracking-wide hover:text-primary transition-colors uppercase"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Favoritos {totalFavorites > 0 && `(${totalFavorites})`}
-            </Link>
-            <Link
-              href="/nossa-historia"
-              className="block text-center py-2 text-sm tracking-wide hover:text-primary transition-colors uppercase"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Nossa História
-            </Link>
-            <Link
-              href="/admin"
-              className="block text-center py-2 text-sm tracking-wide text-muted-foreground hover:text-primary transition-colors uppercase"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Admin
-            </Link>
+          <div className="lg:hidden fixed inset-0 top-[calc(theme(spacing.20)+env(safe-area-inset-top))] bg-background z-40 overflow-y-auto">
+            <div className="flex flex-col py-6 px-4 space-y-1">
+              <Link
+                href="/#novidades"
+                className="flex items-center justify-center py-4 text-base tracking-wide hover:text-primary hover:bg-secondary rounded-xl transition-all uppercase font-medium"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Novidades
+              </Link>
+              <Link
+                href="/categoria/conjuntos"
+                className="flex items-center justify-center py-4 text-base tracking-wide hover:text-primary hover:bg-secondary rounded-xl transition-all uppercase font-medium"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Conjuntos
+              </Link>
+              <Link
+                href="/categoria/tops"
+                className="flex items-center justify-center py-4 text-base tracking-wide hover:text-primary hover:bg-secondary rounded-xl transition-all uppercase font-medium"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Tops
+              </Link>
+              <Link
+                href="/categoria/calcinhas"
+                className="flex items-center justify-center py-4 text-base tracking-wide hover:text-primary hover:bg-secondary rounded-xl transition-all uppercase font-medium"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Calcinhas
+              </Link>
+
+              <div className="border-t border-border my-4" />
+
+              <Link
+                href="/favoritos"
+                className="flex items-center justify-center gap-2 py-4 text-base tracking-wide hover:text-primary hover:bg-secondary rounded-xl transition-all uppercase font-medium"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                <Heart className="w-5 h-5" />
+                Favoritos {totalFavorites > 0 && `(${totalFavorites})`}
+              </Link>
+              <Link
+                href="/nossa-historia"
+                className="flex items-center justify-center py-4 text-base tracking-wide hover:text-primary hover:bg-secondary rounded-xl transition-all uppercase font-medium"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Nossa História
+              </Link>
+              <Link
+                href="/admin"
+                className="flex items-center justify-center py-4 text-base tracking-wide text-muted-foreground hover:text-primary hover:bg-secondary rounded-xl transition-all uppercase"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                <Settings className="w-5 h-5 mr-2" />
+                Admin
+              </Link>
+            </div>
           </div>
         )}
       </nav>
